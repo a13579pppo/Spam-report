@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Spam Report System</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background: #f5f5f5; }
+  h1 { color: #333; }
+  label { display: block; margin: 10px 0 5px; font-weight: bold; }
+  input, textarea { width: 100%; padding: 8px; margin-bottom: 15px; border-radius: 4px; border: 1px solid #ccc; box-sizing: border-box; }
+  button { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 5px; cursor: pointer; font-size: 16px; }
+  button:disabled { background-color: #a0d6a0; cursor: not-allowed; }
+  #message { margin-top: 20px; font-weight: bold; }
+  table { width: 100%; border-collapse: collapse; margin-top: 25px; }
+  th, td { padding: 8px 12px; border: 1px solid #ccc; text-align: left; }
+  th { background-color: #eee; }
+</style>
+</head>
+<body>
+
+<h1>Spam Report System</h1>
+
+<form id="reportForm">
+  <label for="userId">User ID or Username (with @)</label>
+  <input type="text" id="userId" placeholder="@username or numeric ID" required />
+
+  <label for="reportText">Spam Report Description</label>
+  <textarea id="reportText" rows="4" placeholder="Describe the spam activity" required></textarea>
+
+  <button type="submit">Submit Report</button>
+</form>
+
+<div id="message"></div>
+
+<h2>Reported Users</h2>
+<table id="reportsTable">
+  <thead>
+    <tr><th>User ID/Username</th><th>Reports Count</th></tr>
+  </thead>
+  <tbody>
+    <!-- Reports list will appear here -->
+  </tbody>
+</table>
+
+<script>
+  const form = document.getElementById('reportForm');
+  const messageDiv = document.getElementById('message');
+  const reportsTableBody = document.querySelector('#reportsTable tbody');
+
+  // Storage key for reports in localStorage
+  const STORAGE_KEY = 'spamReports';
+
+  function loadReports() {
+    const data = localStorage.getItem(STORAGE_KEY);
+    return data ? JSON.parse(data) : {};
+  }
+
+  function saveReports(reports) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(reports));
+  }
+
+  function renderReports() {
+    const reports = loadReports();
+    reportsTableBody.innerHTML = '';
+    for (const userId in reports) {
+      const count = reports[userId].count;
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<td>${userId}</td><td>${count}</td>`;
+      reportsTableBody.appendChild(tr);
+    }
+  }
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+    const userId = form.userId.value.trim();
+    const text = form.reportText.value.trim();
+    if (!userId || !text) {
+      messageDiv.style.color = 'red';
+      messageDiv.textContent = 'Please fill all fields.';
+      return;
+    }
+
+    let reports = loadReports();
+    if (!reports[userId]) {
+      reports[userId] = { count: 0, texts: [] };
+    }
+    reports[userId].count++;
+    reports[userId].texts.push(text);
+
+    saveReports(reports);
+    renderReports();
+
+    messageDiv.style.color = 'green';
+    messageDiv.textContent = 'Report submitted successfully. Our team will review it and notify you.';
+
+    form.reset();
+
+    // Send report to bot server (replace URL with your server webhook)
+    fetch('https://your-server.com/report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ userId, text }),
+    }).catch(console.error);
+  });
+
+  // Initial render
+  renderReports();
+</script>
+
+</body>
+</html>
