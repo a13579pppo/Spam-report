@@ -1,31 +1,33 @@
-<!DOCTYPE html>
-<html lang="en">
+<!DOCTYPE html><html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SpamTel - Client Demo</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SpamTel Login</title>
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>SpamTel Reporter</h1>
-
-    <div class="report-form">
-      <input type="text" id="username" placeholder="Username (e.g. john_doe)" />
-      <textarea id="reason" placeholder="Reason for spam report"></textarea>
-      <button onclick="submitReport()">Submit Report</button>
+  <div id="login-screen">
+    <h2>SpamTel</h2>
+    <p>Enter your phone number to continue</p>
+    <input type="text" id="phone" placeholder="+123456789" />
+    <button onclick="verifyPhone()">Send Code</button>
+  </div>  <div id="code-screen" style="display:none;">
+    <h3>Enter Code</h3>
+    <input type="text" id="code" placeholder="Enter 1234" />
+    <button onclick="login()">Verify</button>
+  </div>  <div id="chat-screen" style="display:none;">
+    <div class="header">
+      <h3 id="chat-title">Chats</h3>
     </div>
-
-    <hr>
-
-    <div class="user-check">
-      <input type="text" id="checkUser" placeholder="Check a user tag" />
-      <button onclick="checkUser()">Check</button>
+    <ul id="chat-list"></ul>
+  </div>  <div id="p2p-chat" style="display:none;">
+    <div class="header">
+      <span id="p2p-name">User</span>
+      <button onclick="reportSpam()">⋮</button>
     </div>
-
-    <div id="userResult"></div>
-  </div>
-
-  <script src="script.js"></script>
-</body>
+    <div class="bio" id="user-bio"></div>
+    <div id="message-list"></div>
+    <input type="text" id="message-input" placeholder="Type a message" />
+    <button onclick="sendMessage()">Send</button>
+  </div>  <script src="script.js"></script></body>
 </html>
