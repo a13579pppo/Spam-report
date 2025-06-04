@@ -1,33 +1,33 @@
-<!DOCTYPE html><html lang="en">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SpamTel Login</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SpamTel</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="login-screen">
-    <h2>SpamTel</h2>
-    <p>Enter your phone number to continue</p>
-    <input type="text" id="phone" placeholder="+123456789" />
-    <button onclick="verifyPhone()">Send Code</button>
-  </div>  <div id="code-screen" style="display:none;">
-    <h3>Enter Code</h3>
-    <input type="text" id="code" placeholder="Enter 1234" />
-    <button onclick="login()">Verify</button>
-  </div>  <div id="chat-screen" style="display:none;">
-    <div class="header">
-      <h3 id="chat-title">Chats</h3>
+  <div class="container">
+    <h2>Welcome to SpamTel</h2>
+
+    <div id="loginForm">
+      <input type="text" id="phone" placeholder="Enter phone number">
+      <input type="text" id="code" placeholder="Enter code (use 1234)">
+      <button onclick="login()">Login</button>
     </div>
-    <ul id="chat-list"></ul>
-  </div>  <div id="p2p-chat" style="display:none;">
-    <div class="header">
-      <span id="p2p-name">User</span>
-      <button onclick="reportSpam()">⋮</button>
+
+    <div id="chatSection" style="display:none;">
+      <div id="chatList"></div>
+
+      <div id="chatWindow" style="display:none;">
+        <div id="chatMessages"></div>
+        <input type="text" id="messageInput" placeholder="Type a message">
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="reportSpam()" style="background:red; color:white; margin-left:10px;">Report Spam</button>
+      </div>
     </div>
-    <div class="bio" id="user-bio"></div>
-    <div id="message-list"></div>
-    <input type="text" id="message-input" placeholder="Type a message" />
-    <button onclick="sendMessage()">Send</button>
-  </div>  <script src="script.js"></script></body>
+  </div>
+
+  <script src="script.js"></script>
+</body>
 </html>
