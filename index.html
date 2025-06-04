@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpamTel - Client Demo</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>SpamTel Reporter</h1>
+
+    <div class="report-form">
+      <input type="text" id="username" placeholder="Username (e.g. john_doe)" />
+      <textarea id="reason" placeholder="Reason for spam report"></textarea>
+      <button onclick="submitReport()">Submit Report</button>
+    </div>
+
+    <hr>
+
+    <div class="user-check">
+      <input type="text" id="checkUser" placeholder="Check a user tag" />
+      <button onclick="checkUser()">Check</button>
+    </div>
+
+    <div id="userResult"></div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
