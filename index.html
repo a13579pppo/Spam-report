@@ -247,7 +247,7 @@
   </div>
   <div class="chat-container" id="chatContainer">
     <div class="user-list">
-      <div class="user" onclick="openProfile('John Doe')">
+      <div class="user" onclick="openProfile('John Doe', 1)">
         <img class="avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="John Doe Avatar" />
         <div>
           <div class="username" id="user1Name">John Doe</div>
@@ -255,7 +255,7 @@
           <div class="bio" id="user1Bio">Just a regular user.</div>
         </div>
       </div>
-      <div class="user" onclick="openProfile('Alice Smith')">
+      <div class="user" onclick="openProfile('Alice Smith', 2)">
         <img class="avatar" src="https://randomuser.me/api/portraits/women/2.jpg" alt="Alice Smith Avatar" />
         <div>
           <div class="username" id="user2Name">Alice Smith</div>
@@ -263,7 +263,7 @@
           <div class="bio" id="user2Bio">Love photography!</div>
         </div>
       </div>
-      <div class="user" onclick="openProfile('Bob Johnson')">
+      <div class="user" onclick="openProfile('Bob Johnson', 3)">
         <img class="avatar" src="https://randomuser.me/api/portraits/men/3.jpg" alt="Bob Johnson Avatar" />
         <div>
           <div class="username" id="user3Name">Bob Johnson</div>
@@ -271,7 +271,7 @@
           <div class="bio" id="user3Bio">Tech enthusiast.</div>
         </div>
       </div>
-      <div class="user" onclick="openProfile('Emma Davis')">
+      <div class="user" onclick="openProfile('Emma Davis', 4)">
         <img class="avatar" src="https://randomuser.me/api/portraits/women/4.jpg" alt="Emma Davis Avatar" />
         <div>
           <div class="username" id="user4Name">Emma Davis</div>
@@ -279,7 +279,7 @@
           <div class="bio" id="user4Bio">Artist at heart.</div>
         </div>
       </div>
-      <div class="user" onclick="openProfile('Michael Brown')">
+      <div class="user" onclick="openProfile('Michael Brown', 5)">
         <img class="avatar" src="https://randomuser.me/api/portraits/men/5.jpg" alt="Michael Brown Avatar" />
         <div>
           <div class="username" id="user5Name">Michael Brown</div>
@@ -287,7 +287,7 @@
           <div class="bio" id="user5Bio">Gamer and coder.</div>
         </div>
       </div>
-      <div class="user" onclick="openProfile('Sarah Wilson')">
+      <div class="user" onclick="openProfile('Sarah Wilson', 6)">
         <img class="avatar" src="https://randomuser.me/api/portraits/women/6.jpg" alt="Sarah Wilson Avatar" />
         <div>
           <div class="username" id="user6Name">Sarah Wilson</div>
@@ -295,7 +295,7 @@
           <div class="bio" id="user6Bio">Nature lover.</div>
         </div>
       </div>
-      <div class="user" onclick="openProfile('David Lee')">
+      <div class="user" onclick="openProfile('David Lee', 7)">
         <img class="avatar" src="https://randomuser.me/api/portraits/men/7.jpg" alt="David Lee Avatar" />
         <div>
           <div class="username" id="user7Name">David Lee</div>
@@ -323,7 +323,7 @@
     </div>
     <div class="profile-panel" id="profilePanel">
       <button class="back-btn" onclick="closeProfile()">Back</button>
-      <img class="profile-avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile Avatar" />
+      <img class="profile-avatar" id="profileAvatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile Avatar" />
       <h2 id="profileName">User</h2>
       <div class="last-seen">Last seen: a moment ago</div>
       <div class="status" id="profileStatus">Online</div>
@@ -353,6 +353,7 @@
   </div>
   <script>
     let currentUser = 'John Doe';
+    let currentUserIndex = 1;
     let reportCounts = {
       'John Doe': 0,
       'Alice Smith': 0,
@@ -370,6 +371,15 @@
       'Michael Brown': ["Gaming session?", "New game released!", "Code and play!", "What’s your rank?"],
       'Sarah Wilson': ["Nature trip soon?", "Love the outdoors!", "Green vibes!", "Seen any wildlife?"],
       'David Lee': ["Music jam?", "New track out!", "What’s your playlist?", "Let’s duet!"]
+    };
+    const userAvatars = {
+      'John Doe': 'https://randomuser.me/api/portraits/men/1.jpg',
+      'Alice Smith': 'https://randomuser.me/api/portraits/women/2.jpg',
+      'Bob Johnson': 'https://randomuser.me/api/portraits/men/3.jpg',
+      'Emma Davis': 'https://randomuser.me/api/portraits/women/4.jpg',
+      'Michael Brown': 'https://randomuser.me/api/portraits/men/5.jpg',
+      'Sarah Wilson': 'https://randomuser.me/api/portraits/women/6.jpg',
+      'David Lee': 'https://randomuser.me/api/portraits/men/7.jpg'
     };
 
     function showCodeInput() {
@@ -393,19 +403,25 @@
       }
     }
 
-    function openProfile(name) {
+    function openProfile(name, index) {
       currentUser = name;
+      currentUserIndex = index;
       const profilePanel = document.getElementById('profilePanel');
       profilePanel.style.display = 'flex';
       document.getElementById('profileName').textContent = name;
-      document.getElementById('profileAvatar').src = `https://randomuser.me/api/portraits/${name.includes('men') ? 'men' : 'women'}/${parseInt(name.split(' ')[1]) + 1}.jpg`;
-      document.getElementById('bioText').textContent = document.getElementById(`user${parseInt(name.split(' ')[1]) + 1}Bio`).textContent;
-      document.getElementById('profileStatus').textContent = document.getElementById(`user${parseInt(name.split(' ')[1]) + 1}Status`).textContent;
+      document.getElementById('profileAvatar').src = userAvatars[name];
+      document.getElementById('bioText').textContent = document.getElementById(`user${index}Bio`).textContent;
+      document.getElementById('profileStatus').textContent = document.getElementById(`user${index}Status`).textContent;
       document.getElementById('menu').style.display = 'none';
       document.getElementById('reportForm').style.display = 'none';
       document.getElementById('reportConfirmation').style.display = 'none';
       const messages = document.getElementById('messages');
       messages.innerHTML = ''; // Clear previous chat
+      const initialMessage = document.createElement('div');
+      initialMessage.className = 'message other';
+      initialMessage.innerHTML = `<div class="from">${name}</div><div class="text">Hello, click my profile.</div><div class="ticks">✔✔</div>`;
+      messages.appendChild(initialMessage);
+      messages.scrollTop = messages.scrollHeight;
     }
 
     function closeProfile() {
@@ -443,9 +459,9 @@
       }
       reportCounts[currentUser] = (reportCounts[currentUser] || 0) + 1;
       if (reportCounts[currentUser] >= 3) {
-        document.getElementById(`user${parseInt(currentUser.split(' ')[1]) + 1}Name`).innerHTML = `${currentUser}<span class="spam-tag">SPAM</span>`;
+        document.getElementById(`user${currentUserIndex}Name`).innerHTML = `${currentUser}<span class="spam-tag">SPAM</span>`;
         const warning = 'Warning: This user has been reported by users for excessive harassment. Please be cautious.';
-        document.getElementById(`user${parseInt(currentUser.split(' ')[1]) + 1}Bio`).textContent = warning;
+        document.getElementById(`user${currentUserIndex}Bio`).textContent = warning;
         document.getElementById('bioText').textContent = warning;
       }
       document.getElementById('reportForm').style.display = 'none';
