@@ -1,41 +1,65 @@
-document.addEventListener("DOMContentLoaded", function () {
-  const form = document.getElementById("report-form");
-  const statusMsg = document.getElementById("status-msg");
+let isLoggedIn = false;
+let currentChatUser = null;
 
-  form.addEventListener("submit", function (e) {
-    e.preventDefault();
+function login() {
+  const phone = document.getElementById("phone").value;
+  const code = document.getElementById("code").value;
 
-    const username = document.getElementById("username").value.trim();
-    const reason = document.getElementById("reason").value.trim();
-    const language = document.getElementById("language").value;
-
-    if (!username || !reason) {
-      statusMsg.textContent = "Please fill in all fields.";
-      return;
-    }
-
-    const report = {
-      username: username,
-      reason: reason,
-      language: language
-    };
-
-    // ذخیره در localStorage به‌جای فایل چون JS در مرورگر است
-    let reports = JSON.parse(localStorage.getItem("spam_reports") || "[]");
-    reports.push(report);
-    localStorage.setItem("spam_reports", JSON.stringify(reports));
-
-    statusMsg.textContent = "✅ Report submitted to moderation team.";
-    form.reset();
-  });
-
-  // اگر کاربر علامت‌خورده باشد، تگ و بیو را نمایش بده
-  const currentUser = "testuser123"; // این را با نام کاربر واقعی تغییر دهید
-  const markedSpamUsers = ["testuser123", "spammer456"];
-
-  if (markedSpamUsers.includes(currentUser)) {
-    document.getElementById("tag").textContent = "[SPAM]";
-    document.getElementById("bio").textContent =
-      "⚠️ This user has been flagged for suspicious and disturbing activity. Please be cautious when interacting with them. Reports have been reviewed and confirmed.";
+  if (phone && code === "1234") {
+    isLoggedIn = true;
+    document.getElementById("loginForm").style.display = "none";
+    document.getElementById("chatSection").style.display = "block";
+    loadChatList();
+  } else {
+    alert("Invalid code. Use 1234 to log in.");
   }
-});
+}
+
+function loadChatList() {
+  const chatList = document.getElementById("chatList");
+  chatList.style.display = "block";
+
+  const users = [
+    { username: "AliSpammer", tag: "spam", bio: "⚠️ This user may be a spammer." },
+    { username: "NormalUser", tag: "", bio: "Just a regular user of SpamTel." }
+  ];
+
+  chatList.innerHTML = "";
+
+  users.forEach((user, index) => {
+    const item = document.createElement("div");
+    item.className = "chat-item";
+    item.innerHTML = `
+      ${user.username} 
+      ${user.tag ? `<span style="border:1px solid gray; padding:2px 6px; margin-left:8px; font-size:12px;">${user.tag.toUpperCase()}</span>` : ""}
+    `;
+    item.onclick = () => openChat(user);
+    chatList.appendChild(item);
+  });
+}
+
+function openChat(user) {
+  currentChatUser = user;
+  document.getElementById("chatWindow").style.display = "block";
+  document.getElementById("chatMessages").innerHTML = `
+    <div><strong>${user.username}</strong></div>
+    <div style="font-size:13px; color:gray; margin-bottom:10px;">${user.bio}</div>
+  `;
+}
+
+function sendMessage() {
+  const msg = document.getElementById("messageInput").value.trim();
+  if (!msg || !currentChatUser) return;
+
+  const messageElement = document.createElement("div");
+  messageElement.className = "message sent";
+  messageElement.innerText = msg;
+
+  document.getElementById("chatMessages").appendChild(messageElement);
+  document.getElementById("messageInput").value = "";
+}
+
+function reportSpam() {
+  if (!currentChatUser) return;
+  alert("✅ Report for spam submitted to admins.");
+}
