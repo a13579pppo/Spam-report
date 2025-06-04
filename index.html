@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SpamTel Client</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="app-container">
+    <h1>SpamTel Client</h1>
+    <div class="user-profile">
+      <span class="username">testuser123</span>
+      <span class="tag" id="user-tag">[SPAM]</span>
+      <p class="bio" id="user-bio">
+        ⚠️ This user has been flagged for spam activity. Please be cautious when interacting with them.
+      </p>
+    </div>
+
+    <div class="report-form">
+      <h2>Report User</h2>
+      <input type="text" id="username" placeholder="Username" />
+      <select id="reason">
+        <option value="spam">Spam</option>
+        <option value="scam">Scam</option>
+        <option value="abuse">Abuse</option>
+      </select>
+      <select id="language">
+        <option value="en">English</option>
+        <option value="fa">Farsi</option>
+        <option value="ru">Russian</option>
+      </select>
+      <button onclick="saveReport()">Send Report</button>
+    </div>
+    <p id="status-msg"></p>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
