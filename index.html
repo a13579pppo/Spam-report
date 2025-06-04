@@ -126,11 +126,16 @@
       color: #fff;
     }
     .profile-panel {
-      width: 300px;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
       padding: 20px;
       background-color: #202c33;
       display: none;
       flex-direction: column;
+      z-index: 10;
     }
     .profile-avatar {
       width: 100px;
@@ -168,7 +173,7 @@
       border-radius: 6px;
       padding: 10px;
       right: 20px;
-      z-index: 10;
+      z-index: 11;
     }
     .menu-item {
       padding: 8px;
@@ -221,6 +226,16 @@
       border-radius: 4px;
       cursor: pointer;
     }
+    .back-btn {
+      margin-bottom: 20px;
+      padding: 8px 12px;
+      background: #005c4b;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+      align-self: flex-start;
+    }
   </style>
 </head>
 <body>
@@ -259,6 +274,7 @@
       </div>
     </div>
     <div class="profile-panel" id="profilePanel">
+      <button class="back-btn" onclick="closeProfile()">Back</button>
       <img class="profile-avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile Avatar" />
       <h2 id="profileName">User</h2>
       <div class="last-seen">Last seen: a moment ago</div>
@@ -320,13 +336,18 @@
 
     function openProfile(name) {
       currentUser = name;
-      document.getElementById('profilePanel').style.display = 'flex';
+      const profilePanel = document.getElementById('profilePanel');
+      profilePanel.style.display = 'flex';
       document.getElementById('profileName').textContent = name;
       document.getElementById('bioText').textContent = document.getElementById('user1Bio').textContent;
       document.getElementById('profileStatus').textContent = document.getElementById('user1Status').textContent;
       document.getElementById('menu').style.display = 'none';
       document.getElementById('reportForm').style.display = 'none';
       document.getElementById('reportConfirmation').style.display = 'none';
+    }
+
+    function closeProfile() {
+      document.getElementById('profilePanel').style.display = 'none';
     }
 
     function toggleMenu() {
