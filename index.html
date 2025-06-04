@@ -1,154 +1,162 @@
 <!DOCTYPE html><html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Y-Tel Chat</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Y Tel - Chat View</title>
   <style>
     body {
       margin: 0;
-      font-family: sans-serif;
+      font-family: Arial, sans-serif;
       background-color: #1e1e2f;
-      color: white;
+      color: #fff;
     }
-    .chat-container {
-      max-width: 600px;
-      margin: 40px auto;
-      padding: 20px;
-      background-color: #2c2f48;
-      border-radius: 12px;
+    .header {
+      background-color: #2a2a40;
+      padding: 1rem;
+      font-size: 1.2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .profile-view {
+      background-color: #2a2a40;
+      border-radius: 10px;
+      padding: 1rem;
+      margin: 1rem;
+      display: flex;
+      align-items: center;
+    }
+    .profile-pic {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background-color: #555;
+      margin-right: 1rem;
+    }
+    .profile-info {
+      flex: 1;
+    }
+    .tag {
+      background-color: red;
+      color: white;
+      font-size: 0.8rem;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      margin-left: 0.5rem;
+    }
+    .bio {
+      margin-top: 0.5rem;
+      font-size: 0.9rem;
+      color: #ccc;
+    }
+    .chat-box {
+      margin: 1rem;
+      background-color: #333;
+      border-radius: 10px;
+      padding: 1rem;
     }
     .message {
       display: flex;
       align-items: flex-start;
-      margin-bottom: 16px;
+      margin-bottom: 1rem;
     }
     .avatar {
-      width: 50px;
-      height: 50px;
+      width: 48px;
+      height: 48px;
+      background-color: #666;
       border-radius: 50%;
-      margin-right: 12px;
-      background-size: cover;
+      margin-right: 0.5rem;
     }
-    .content {
-      background: #3b3f5c;
-      padding: 12px 16px;
-      border-radius: 12px;
-      position: relative;
-      width: 100%;
+    .bubble {
+      background-color: #444;
+      padding: 0.75rem;
+      border-radius: 8px;
+      max-width: 80%;
     }
-    .username {
-      font-weight: bold;
-      color: #72b7ff;
-      cursor: pointer;
-    }
-    .spam-label {
-      background: red;
+    .report-btn {
+      background-color: #f33;
       color: white;
-      font-size: 12px;
-      padding: 2px 6px;
-      border-radius: 4px;
-      margin-left: 6px;
-    }
-    .profile-popup {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: #1c1c2b;
-      padding: 24px;
-      border-radius: 12px;
-      display: none;
-      max-width: 90%;
-      z-index: 999;
-    }
-    .profile-popup h2, .profile-popup p {
-      margin: 8px 0;
-    }
-    .overlay {
-      display: none;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0,0,0,0.7);
-      z-index: 998;
-    }
-    .report-box textarea {
-      width: 100%;
-      padding: 8px;
-      margin: 10px 0;
-    }
-    button {
-      background: #4a90e2;
-      color: white;
+      padding: 0.5rem;
       border: none;
-      padding: 8px 16px;
-      border-radius: 6px;
+      border-radius: 5px;
+      margin: 1rem;
       cursor: pointer;
+    }
+    #reportModal {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+      justify-content: center;
+      align-items: center;
+    }
+    #reportModal .modal-content {
+      background-color: #222;
+      padding: 2rem;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+    }
+    .report-option {
+      margin-bottom: 0.5rem;
+    }
+    textarea {
+      width: 100%;
+      margin-top: 0.5rem;
+      border-radius: 5px;
+      padding: 0.5rem;
     }
   </style>
 </head>
 <body>
-  <div class="chat-container">
+  <div class="header">
+    <span>Y Tel</span>
+    <button class="report-btn" onclick="openReport()">Report</button>
+  </div>  <div class="profile-view">
+    <div class="profile-pic"></div>
+    <div class="profile-info">
+      <div><strong>UnknownUser123</strong><span id="spamTag"></span></div>
+      <div class="bio" id="bio">Just a normal user. Loves coding and chatting.</div>
+    </div>
+  </div>  <div class="chat-box">
     <div class="message">
-      <div class="avatar" style="background-image: url('https://placehold.co/50x50')"></div>
-      <div class="content">
-        <span class="username" onclick="openProfile('Ali')">Ali</span>
-        <span class="spam-label" id="spam-Ali" style="display: none;">Spam</span>
-        <p>Hello everyone!</p>
-      </div>
+      <div class="avatar"></div>
+      <div class="bubble">Hey, check out this link! 😂</div>
     </div>
     <div class="message">
-      <div class="avatar" style="background-image: url('https://placehold.co/50x50/f00/fff')"></div>
-      <div class="content">
-        <span class="username" onclick="openProfile('Sara')">Sara</span>
-        <p>Nice to meet you!</p>
-      </div>
+      <div class="avatar"></div>
+      <div class="bubble">Click here for free gifts 👉 example.com</div>
     </div>
-    <div class="message">
-      <div class="avatar" style="background-image: url('https://placehold.co/50x50/0f0/fff')"></div>
-      <div class="content">
-        <span class="username" onclick="openProfile('Reza')">Reza</span>
-        <p>Let’s build this project together.</p>
-      </div>
-    </div>
-  </div>  <div class="overlay" id="overlay"></div>
-  <div class="profile-popup" id="profile">
-    <h2 id="profile-name">Ali</h2>
-    <p><b>@<span id="profile-id">Ali</span></b></p>
-    <p id="bio">Hi, I'm Ali. I love coding and working on cool projects.</p>
-    <div class="report-box">
-      <textarea id="report-text" placeholder="Reason for report..."></textarea>
-      <button onclick="submitReport()">Submit Report</button>
+  </div>  <div id="reportModal">
+    <div class="modal-content">
+      <h3>Report User</h3>
+      <div class="report-option"><input type="checkbox" id="spam"> Spam</div>
+      <div class="report-option"><input type="checkbox" id="scam"> Scam</div>
+      <div class="report-option"><input type="checkbox" id="child"> Child Abuse</div>
+      <div class="report-option"><input type="checkbox" id="porn"> Pornography</div>
+      <textarea placeholder="Additional details (optional)..."></textarea>
+      <button class="report-btn" onclick="submitReport()">Submit Report</button>
     </div>
   </div>  <script>
-    let reports = {
-      'Ali': 0,
-      'Sara': 0,
-      'Reza': 0
-    };
-    let currentUser = '';
-
-    function openProfile(user) {
-      currentUser = user;
-      document.getElementById("profile-name").innerText = user;
-      document.getElementById("profile-id").innerText = user;
-      const bioText = reports[user] >= 3
-        ? '⚠️ This account has been reported multiple times. Activity restricted. Contact support.'
-        : `Hi, I'm ${user}. I love coding and working on cool projects.`;
-      document.getElementById("bio").innerText = bioText;
-      document.getElementById("overlay").style.display = 'block';
-      document.getElementById("profile").style.display = 'block';
+    let reportCount = 0;
+    function openReport() {
+      document.getElementById("reportModal").style.display = "flex";
     }
-
     function submitReport() {
-      reports[currentUser]++;
-      alert("Report submitted!");
-      document.getElementById("overlay").style.display = 'none';
-      document.getElementById("profile").style.display = 'none';
-      if (reports[currentUser] >= 3) {
-        document.getElementById(`spam-${currentUser}`).style.display = 'inline-block';
+      reportCount++;
+      alert("Report submitted. Thank you.");
+      document.getElementById("reportModal").style.display = "none";
+      if (reportCount >= 3) {
+        document.getElementById("spamTag").innerText = " SPAM";
+        document.getElementById("spamTag").classList.add("tag");
+        document.getElementById("bio").innerText = "⚠️ This user has been reported multiple times for spam and abusive behavior. Please be cautious.";
+      }
+    }
+    window.onclick = function(e) {
+      if (e.target.id === "reportModal") {
+        document.getElementById("reportModal").style.display = "none";
       }
     }
   </script></body>
