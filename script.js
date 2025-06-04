@@ -1,70 +1,66 @@
-document.addEventListener("DOMContentLoaded", () => {
-  const loginForm = document.getElementById("loginForm");
-  const loginBox = document.getElementById("login");
-  const chatBox = document.getElementById("chatUI");
-  const chatList = document.getElementById("chatList");
-  const messagesBox = document.getElementById("messages");
-  const sendForm = document.getElementById("sendForm");
-  const messageInput = document.getElementById("messageInput");
-  const selectedChatTitle = document.getElementById("chatTitle");
-  const reportBtn = document.getElementById("reportBtn");
+const users = [
+  { username: "john_doe", name: "John Doe", spam: true },
+  { username: "sara_chan", name: "Sara Chan", spam: false },
+  { username: "evil_bot", name: "Evil Bot", spam: true },
+];
 
-  const fakeChats = [
-    { name: "Alice", username: "alice123", tag: "spam" },
-    { name: "Bob", username: "bob456", tag: null },
-    { name: "Charlie", username: "charlie789", tag: null }
-  ];
+let selectedUser = null;
 
-  let currentChat = null;
+function login() {
+  const number = document.getElementById("number").value;
+  const code = document.getElementById("code").value;
 
-  loginForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    const phone = document.getElementById("phone").value;
-    const code = document.getElementById("code").value;
-    if (phone && code === "1234") {
-      loginBox.style.display = "none";
-      chatBox.style.display = "block";
-      renderChatList();
-    } else {
-      alert("Invalid code.");
-    }
-  });
-
-  function renderChatList() {
-    chatList.innerHTML = "";
-    fakeChats.forEach(chat => {
-      const div = document.createElement("div");
-      div.className = "chat-item";
-      div.textContent = chat.name + (chat.tag ? ` [${chat.tag.toUpperCase()}]` : "");
-      div.addEventListener("click", () => {
-        currentChat = chat;
-        selectedChatTitle.textContent = chat.name;
-        messagesBox.innerHTML = "";
-      });
-      chatList.appendChild(div);
-    });
+  if (number && code === "1234") {
+    document.getElementById("login").style.display = "none";
+    document.getElementById("app").style.display = "flex";
+    loadChatList();
+  } else {
+    alert("❌ Incorrect code! Try 1234 for test login.");
   }
+}
 
-  sendForm.addEventListener("submit", (e) => {
-    e.preventDefault();
-    if (!currentChat) {
-      alert("Select a chat first.");
-      return;
-    }
-    const msg = messageInput.value;
-    if (msg.trim() === "") return;
-    const div = document.createElement("div");
-    div.className = "message";
-    div.textContent = `You: ${msg}`;
-    messagesBox.appendChild(div);
-    messageInput.value = "";
-  });
+function loadChatList() {
+  const list = document.getElementById("chatList");
+  list.innerHTML = "";
 
-  reportBtn.addEventListener("click", () => {
-    if (!currentChat) {
-      alert("Select a user first.");
-      return;
-    }
-    alert("✅ Report sent to administrators.");
+  users.forEach((user, i) => {
+    const item = document.createElement("div");
+    item.className = "chat-item";
+    item.innerHTML = `
+      <strong>@${user.username}</strong><br>
+      ${user.spam ? "<small style='color:red;'>⚠️ Suspected Spam</small>" : "<small>Safe</small>"}
+    `;
+    item.onclick = () => openChat(i);
+    list.appendChild(item);
   });
-});
+}
+
+function openChat(index) {
+  selectedUser = users[index];
+  document.getElementById("chatTitle").innerText = selectedUser.name;
+  document.getElementById("messages").innerHTML = `
+    <div class="message">Hi, I'm ${selectedUser.name} (@${selectedUser.username})</div>
+  `;
+}
+
+function sendMessage() {
+  const input = document.getElementById("messageInput");
+  const message = input.value.trim();
+
+  if (!message || !selectedUser) return;
+
+  const msgDiv = document.createElement("div");
+  msgDiv.className = "message self";
+  msgDiv.innerText = message;
+  document.getElementById("messages").appendChild(msgDiv);
+  input.value = "";
+}
+
+function reportSpam() {
+  if (!selectedUser) return;
+
+  const reason = prompt("🚨 Why do you want to report this user?");
+  if (reason) {
+    alert(`✅ Report for @${selectedUser.username} submitted.\nReason: ${reason}`);
+  }
+}
