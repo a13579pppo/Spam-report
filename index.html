@@ -58,7 +58,6 @@
       width: 42px;
       height: 42px;
       border-radius: 50%;
-      background-color: #555;
       margin-right: 10px;
     }
     .username {
@@ -67,6 +66,11 @@
     .spam-tag {
       color: #ff5555;
       font-size: 0.9em;
+      margin-left: 6px;
+    }
+    .status {
+      font-size: 0.8em;
+      color: #00ff88;
       margin-left: 6px;
     }
     .chat-box {
@@ -102,6 +106,12 @@
     .message .text {
       margin-top: 4px;
     }
+    .message .ticks {
+      font-size: 0.8em;
+      color: #00ff88;
+      margin-top: 4px;
+      text-align: right;
+    }
     .input-box {
       padding: 16px;
       border-top: 1px solid #333;
@@ -126,7 +136,6 @@
       width: 100px;
       height: 100px;
       border-radius: 50%;
-      background-color: #555;
       margin: 0 auto 10px;
     }
     .bio {
@@ -137,6 +146,10 @@
     .last-seen {
       font-size: 0.8em;
       color: #8696a0;
+    }
+    .status {
+      font-size: 0.8em;
+      color: #00ff88;
     }
     .menu-btn {
       margin-top: 10px;
@@ -199,6 +212,15 @@
       color: #00ff88;
       display: none;
     }
+    .user-message-btn {
+      margin-top: 10px;
+      padding: 8px 12px;
+      background: #005c4b;
+      border: none;
+      color: white;
+      border-radius: 4px;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -211,9 +233,10 @@
   <div class="chat-container" id="chatContainer">
     <div class="user-list">
       <div class="user" onclick="openProfile('John Doe')">
-        <div class="avatar"></div>
+        <img class="avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="John Doe Avatar" />
         <div>
           <div class="username" id="user1Name">John Doe</div>
+          <div class="status" id="user1Status">Online</div>
           <div class="bio" id="user1Bio">Just a regular user.</div>
         </div>
       </div>
@@ -223,10 +246,12 @@
         <div class="message other">
           <div class="from" id="msgFrom1">John Doe</div>
           <div class="text">Hello, click my profile.</div>
+          <div class="ticks">✔✔</div>
         </div>
         <div class="message mine">
           <div class="from">You</div>
           <div class="text">Hi! How can I help?</div>
+          <div class="ticks">✔✔</div>
         </div>
       </div>
       <div class="input-box">
@@ -234,9 +259,10 @@
       </div>
     </div>
     <div class="profile-panel" id="profilePanel">
-      <div class="profile-avatar"></div>
+      <img class="profile-avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile Avatar" />
       <h2 id="profileName">User</h2>
       <div class="last-seen">Last seen: a moment ago</div>
+      <div class="status" id="profileStatus">Online</div>
       <div class="bio" id="bioText">Just a regular user.</div>
       <button class="menu-btn" onclick="toggleMenu()">⋮</button>
       <div class="menu" id="menu">
@@ -258,11 +284,18 @@
         <button class="send-report" onclick="sendReport()">Send Report</button>
         <div class="report-confirmation" id="reportConfirmation">Report sent to moderators.</div>
       </div>
+      <button class="user-message-btn" onclick="sendUserMessage()">Send Message from User</button>
     </div>
   </div>
   <script>
     let currentUser = 'John Doe';
     let reportCounts = { 'John Doe': 0 };
+    const userMessages = [
+      "Hey, how are you today?",
+      "Check out this cool link!",
+      "What’s up? Want to chat?",
+      "I have a quick question for you."
+    ];
 
     function showCodeInput() {
       const phone = document.getElementById('phoneInput').value.trim();
@@ -290,6 +323,7 @@
       document.getElementById('profilePanel').style.display = 'flex';
       document.getElementById('profileName').textContent = name;
       document.getElementById('bioText').textContent = document.getElementById('user1Bio').textContent;
+      document.getElementById('profileStatus').textContent = document.getElementById('user1Status').textContent;
       document.getElementById('menu').style.display = 'none';
       document.getElementById('reportForm').style.display = 'none';
       document.getElementById('reportConfirmation').style.display = 'none';
@@ -343,12 +377,23 @@
         const messages = document.getElementById('messages');
         const newMessage = document.createElement('div');
         newMessage.className = 'message mine';
-        newMessage.innerHTML = `<div class="from">You</div><div class="text">${text}</div>`;
+        newMessage.innerHTML = `<div class="from">You</div><div class="text">${text}</div><div class="ticks">✔✔</div>`;
         messages.appendChild(newMessage);
         input.value = '';
         messages.scrollTop = messages.scrollHeight;
       }
     }
+
+    function sendUserMessage() {
+      const messages = document.getElementById('messages');
+      const randomIndex = Math.floor(Math.random() * userMessages.length);
+      const userText = userMessages[randomIndex];
+      const newMessage = document.createElement('div');
+      newMessage.className = 'message other';
+      newMessage.innerHTML = `<div class="from">${currentUser}</div><div class="text">${userText}</div><div class="ticks">✔✔</div>`;
+      messages.appendChild(newMessage);
+      messages.scrollTop = messages.scrollHeight;
+    }
   </script>
 </body>
-  </html>
+</html>
