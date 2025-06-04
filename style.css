@@ -1,61 +1,84 @@
 body {
-  font-family: Arial, sans-serif;
-  background-color: #f7f9fc;
-  color: #333;
   margin: 0;
-  padding: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f1f1f1;
 }
 
 .container {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 20px;
+  max-width: 400px;
+  margin: 50px auto;
   background: white;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-h1 {
-  text-align: center;
-  color: #0077cc;
-}
-
-input, textarea {
+input[type="text"], input[type="number"] {
   width: 100%;
   padding: 10px;
   margin-top: 10px;
-  margin-bottom: 15px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
-  border-radius: 4px;
-  resize: vertical;
+  border-radius: 8px;
 }
 
 button {
-  background-color: #0077cc;
-  color: white;
-  padding: 10px;
   width: 100%;
+  padding: 12px;
+  background-color: #0088cc;
   border: none;
-  border-radius: 4px;
+  color: white;
+  border-radius: 8px;
   cursor: pointer;
-}
-
-button:hover {
-  background-color: #005fa3;
-}
-
-#userResult {
-  margin-top: 20px;
   font-size: 16px;
 }
 
-.tag-label {
+button:hover {
+  background-color: #0077b3;
+}
+
+.chat-list, .chat-window {
+  display: none;
+}
+
+.chat-item {
+  padding: 12px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.chat-item:hover {
+  background-color: #f0f0f0;
+}
+
+.chat-window {
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  background: white;
+  margin-top: 20px;
+}
+
+.message {
+  background-color: #e1f3ff;
+  padding: 10px;
+  margin-bottom: 8px;
+  border-radius: 10px;
+  max-width: 70%;
+}
+
+.message.sent {
+  background-color: #c6f1d6;
+  align-self: flex-end;
+}
+
+#messageInput {
+  margin-top: 10px;
+  width: calc(100% - 80px);
   display: inline-block;
-  padding: 2px 8px;
-  border: 1px solid #444;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: bold;
-  color: #444;
-  background-color: transparent;
+}
+
+#sendBtn {
+  width: 60px;
+  display: inline-block;
 }
