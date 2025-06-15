@@ -1,497 +1,79 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Telegram-Like Chat</title>
-  <style>
-    body {
-      margin: 0;
-      font-family: 'Arial', sans-serif;
-      background-color: #181a1b;
-      color: #fff;
-    }
-    .login-panel {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-      background-color: #202c33;
-    }
-    .login-panel input {
-      width: 300px;
-      padding: 12px;
-      margin: 10px 0;
-      border: none;
-      border-radius: 20px;
-      background-color: #333;
-      color: #fff;
-    }
-    .login-panel button {
-      padding: 10px 20px;
-      background-color: #005c4b;
-      border: none;
-      color: white;
-      border-radius: 20px;
-      cursor: pointer;
-    }
-    .chat-container {
-      display: none;
-      flex-direction: row;
-      height: 100vh;
-    }
-    .user-list {
-      width: 300px;
-      background-color: #202c33;
-      overflow-y: auto;
-      border-right: 1px solid #333;
-    }
-    .user {
-      display: flex;
-      align-items: center;
-      padding: 12px;
-      border-bottom: 1px solid #333;
-      cursor: pointer;
-    }
-    .avatar {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      margin-right: 10px;
-    }
-    .username {
-      font-weight: bold;
-    }
-    .spam-tag {
-      color: #ff5555;
-      font-size: 0.9em;
-      margin-left: 6px;
-    }
-    .status {
-      font-size: 0.8em;
-      color: #00ff88;
-      margin-left: 6px;
-    }
-    .chat-box {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-    }
-    .messages {
-      padding: 20px;
-      overflow-y: auto;
-      flex: 1;
-    }
-    .message {
-      margin-bottom: 16px;
-      max-width: 70%;
-    }
-    .message.mine {
-      margin-left: auto;
-      background-color: #005c4b;
-      padding: 10px 15px;
-      border-radius: 8px 8px 0 8px;
-    }
-    .message.other {
-      margin-right: auto;
-      background-color: #2a3942;
-      padding: 10px 15px;
-      border-radius: 8px 8px 8px 0;
-    }
-    .message .from {
-      font-weight: bold;
-    }
-    .message .text {
-      margin-top: 4px;
-    }
-    .message .ticks {
-      font-size: 0.8em;
-      color: #00ff88;
-      margin-top: 4px;
-      text-align: right;
-    }
-    .input-box {
-      padding: 16px;
-      border-top: 1px solid #333;
-      background-color: #202c33;
-    }
-    .input-box input {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 20px;
-      background-color: #333;
-      color: #fff;
-    }
-    .profile-panel {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      padding: 20px;
-      background-color: #202c33;
-      display: none;
-      flex-direction: column;
-      z-index: 10;
-    }
-    .profile-avatar {
-      width: 100px;
-      height: 100px;
-      border-radius: 50%;
-      margin: 0 auto 10px;
-    }
-    .bio {
-      margin-top: 12px;
-      font-size: 0.9em;
-      color: #ccc;
-    }
-    .last-seen {
-      font-size: 0.8em;
-      color: #8696a0;
-    }
-    .status {
-      font-size: 0.8em;
-      color: #00ff88;
-    }
-    .menu-btn {
-      margin-top: 10px;
-      padding: 8px;
-      background: none;
-      border: none;
-      color: #fff;
-      font-size: 1.2em;
-      cursor: pointer;
-      align-self: flex-end;
-    }
-    .menu {
-      display: none;
-      position: absolute;
-      background: #2a3942;
-      border-radius: 6px;
-      padding: 10px;
-      right: 20px;
-      z-index: 11;
-    }
-    .menu-item {
-      padding: 8px;
-      cursor: pointer;
-      color: #fff;
-    }
-    .menu-item:hover {
-      background: #333;
-    }
-    .report-form {
-      margin-top: 12px;
-      display: none;
-    }
-    .report-form input[type="radio"] {
-      margin-right: 5px;
-    }
-    .report-form label {
-      margin-right: 10px;
-      font-size: 0.9em;
-    }
-    .report-form textarea {
-      width: 100%;
-      height: 60px;
-      background: #333;
-      border: none;
-      color: white;
-      padding: 8px;
-      margin-top: 8px;
-    }
-    .send-report {
-      margin-top: 8px;
-      background: #d32f2f;
-      padding: 8px 12px;
-      border: none;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .report-confirmation {
-      margin-top: 10px;
-      color: #00ff88;
-      display: none;
-    }
-    .user-message-btn {
-      margin-top: 10px;
-      padding: 8px 12px;
-      background: #005c4b;
-      border: none;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-    .back-btn {
-      margin-bottom: 20px;
-      padding: 8px 12px;
-      background: #005c4b;
-      border: none;
-      color: white;
-      border-radius: 4px;
-      cursor: pointer;
-      align-self: flex-start;
-    }
-  </style>
-</head>
-<body>
-  <div class="login-panel" id="loginPanel">
-    <input type="text" id="phoneInput" placeholder="Enter your phone number..." />
-    <button onclick="showCodeInput()">Next</button>
-    <input type="text" id="codeInput" placeholder="Enter code (1234)" style="display: none;" />
-    <button onclick="verifyCode()" style="display: none;" id="verifyButton">Verify</button>
-  </div>
-  <div class="chat-container" id="chatContainer">
-    <div class="user-list">
-      <div class="user" onclick="openProfile('John Doe', 1)">
-        <img class="avatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="John Doe Avatar" />
-        <div>
-          <div class="username" id="user1Name">John Doe</div>
-          <div class="status" id="user1Status">Online</div>
-          <div class="bio" id="user1Bio">Just a regular user.</div>
-        </div>
-      </div>
-      <div class="user" onclick="openProfile('Alice Smith', 2)">
-        <img class="avatar" src="https://randomuser.me/api/portraits/women/2.jpg" alt="Alice Smith Avatar" />
-        <div>
-          <div class="username" id="user2Name">Alice Smith</div>
-          <div class="status" id="user2Status">Online</div>
-          <div class="bio" id="user2Bio">Love photography!</div>
-        </div>
-      </div>
-      <div class="user" onclick="openProfile('Bob Johnson', 3)">
-        <img class="avatar" src="https://randomuser.me/api/portraits/men/3.jpg" alt="Bob Johnson Avatar" />
-        <div>
-          <div class="username" id="user3Name">Bob Johnson</div>
-          <div class="status" id="user3Status">Online</div>
-          <div class="bio" id="user3Bio">Tech enthusiast.</div>
-        </div>
-      </div>
-      <div class="user" onclick="openProfile('Emma Davis', 4)">
-        <img class="avatar" src="https://randomuser.me/api/portraits/women/4.jpg" alt="Emma Davis Avatar" />
-        <div>
-          <div class="username" id="user4Name">Emma Davis</div>
-          <div class="status" id="user4Status">Online</div>
-          <div class="bio" id="user4Bio">Artist at heart.</div>
-        </div>
-      </div>
-      <div class="user" onclick="openProfile('Michael Brown', 5)">
-        <img class="avatar" src="https://randomuser.me/api/portraits/men/5.jpg" alt="Michael Brown Avatar" />
-        <div>
-          <div class="username" id="user5Name">Michael Brown</div>
-          <div class="status" id="user5Status">Online</div>
-          <div class="bio" id="user5Bio">Gamer and coder.</div>
-        </div>
-      </div>
-      <div class="user" onclick="openProfile('Sarah Wilson', 6)">
-        <img class="avatar" src="https://randomuser.me/api/portraits/women/6.jpg" alt="Sarah Wilson Avatar" />
-        <div>
-          <div class="username" id="user6Name">Sarah Wilson</div>
-          <div class="status" id="user6Status">Online</div>
-          <div class="bio" id="user6Bio">Nature lover.</div>
-        </div>
-      </div>
-      <div class="user" onclick="openProfile('David Lee', 7)">
-        <img class="avatar" src="https://randomuser.me/api/portraits/men/7.jpg" alt="David Lee Avatar" />
-        <div>
-          <div class="username" id="user7Name">David Lee</div>
-          <div class="status" id="user7Status">Online</div>
-          <div class="bio" id="user7Bio">Music addict.</div>
-        </div>
-      </div>
-    </div>
-    <div class="chat-box">
-      <div class="messages" id="messages">
-        <div class="message other">
-          <div class="from" id="msgFrom1">John Doe</div>
-          <div class="text">Hello, click my profile.</div>
-          <div class="ticks">✔✔</div>
-        </div>
-        <div class="message mine">
-          <div class="from">You</div>
-          <div class="text">Hi! How can I help?</div>
-          <div class="ticks">✔✔</div>
-        </div>
-      </div>
-      <div class="input-box">
-        <input type="text" placeholder="Write a message..." onkeypress="if(event.key === 'Enter') sendMessage()">
-      </div>
-    </div>
-    <div class="profile-panel" id="profilePanel">
-      <button class="back-btn" onclick="closeProfile()">Back</button>
-      <img class="profile-avatar" id="profileAvatar" src="https://randomuser.me/api/portraits/men/1.jpg" alt="Profile Avatar" />
-      <h2 id="profileName">User</h2>
-      <div class="last-seen">Last seen: a moment ago</div>
-      <div class="status" id="profileStatus">Online</div>
-      <div class="bio" id="bioText">Just a regular user.</div>
-      <button class="menu-btn" onclick="toggleMenu()">⋮</button>
-      <div class="menu" id="menu">
-        <div class="menu-item" onclick="selectReport('Spam')">Report Spam</div>
-        <div class="menu-item" onclick="selectReport('Scam')">Report Scam</div>
-        <div class="menu-item" onclick="selectReport('Child Abuse')">Report Child Abuse</div>
-        <div class="menu-item" onclick="selectReport('Insult')">Report Insult</div>
-        <div class="menu-item" onclick="selectReport('Inappropriate Content')">Report Inappropriate Content</div>
-      </div>
-      <div class="report-form" id="reportForm">
-        <div>
-          <input type="radio" name="reportType" value="Spam" id="spam"><label for="spam">Spam</label>
-          <input type="radio" name="reportType" value="Scam" id="scam"><label for="scam">Scam</label>
-          <input type="radio" name="reportType" value="Child Abuse" id="abuse"><label for="abuse">Child Abuse</label>
-          <input type="radio" name="reportType" value="Insult" id="insult"><label for="insult">Insult</label>
-          <input type="radio" name="reportType" value="Inappropriate Content" id="porn"><label for="porn">Inappropriate Content</label>
-        </div>
-        <textarea placeholder="Write reason (optional)..."></textarea>
-        <button class="send-report" onclick="sendReport()">Send Report</button>
-        <div class="report-confirmation" id="reportConfirmation">Report sent to moderators.</div>
-      </div>
-      <button class="user-message-btn" onclick="sendUserMessage()">Send Message from User</button>
-    </div>
-  </div>
-  <script>
-    let currentUser = 'John Doe';
-    let currentUserIndex = 1;
-    let reportCounts = {
-      'John Doe': 0,
-      'Alice Smith': 0,
-      'Bob Johnson': 0,
-      'Emma Davis': 0,
-      'Michael Brown': 0,
-      'Sarah Wilson': 0,
-      'David Lee': 0
-    };
-    const userMessages = {
-      'John Doe': ["Hey, how are you today?", "Check out this cool link!", "What’s up? Want to chat?", "I have a quick question for you."],
-      'Alice Smith': ["Nice to meet you!", "Love your style!", "Let’s share photos!", "How’s your day?"],
-      'Bob Johnson': ["Tech talk anyone?", "New gadget alert!", "Coding tonight?", "What’s your setup?"],
-      'Emma Davis': ["Check my latest art!", "Colors inspire me.", "Let’s collaborate!", "How’s your creativity?"],
-      'Michael Brown': ["Gaming session?", "New game released!", "Code and play!", "What’s your rank?"],
-      'Sarah Wilson': ["Nature trip soon?", "Love the outdoors!", "Green vibes!", "Seen any wildlife?"],
-      'David Lee': ["Music jam?", "New track out!", "What’s your playlist?", "Let’s duet!"]
-    };
-    const userAvatars = {
-      'John Doe': 'https://randomuser.me/api/portraits/men/1.jpg',
-      'Alice Smith': 'https://randomuser.me/api/portraits/women/2.jpg',
-      'Bob Johnson': 'https://randomuser.me/api/portraits/men/3.jpg',
-      'Emma Davis': 'https://randomuser.me/api/portraits/women/4.jpg',
-      'Michael Brown': 'https://randomuser.me/api/portraits/men/5.jpg',
-      'Sarah Wilson': 'https://randomuser.me/api/portraits/women/6.jpg',
-      'David Lee': 'https://randomuser.me/api/portraits/men/7.jpg'
-    };
+import React, { useState, useEffect } from "react";
+import { LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid } from "recharts";
 
-    function showCodeInput() {
-      const phone = document.getElementById('phoneInput').value.trim();
-      if (phone) {
-        document.getElementById('phoneInput').style.display = 'none';
-        document.getElementById('codeInput').style.display = 'block';
-        document.getElementById('verifyButton').style.display = 'block';
-      } else {
-        alert('Please enter a phone number.');
-      }
-    }
+export default function Home() {
+  const [inputText, setInputText] = useState("");
+  const [result, setResult] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [logs, setLogs] = useState([]);
 
-    function verifyCode() {
-      const code = document.getElementById('codeInput').value.trim();
-      if (code === '1234') {
-        document.getElementById('loginPanel').style.display = 'none';
-        document.getElementById('chatContainer').style.display = 'flex';
-      } else {
-        alert('Invalid code. Please enter 1234.');
-      }
+  const classifyMessage = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/classify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ text: inputText }),
+      });
+      const data = await res.json();
+      setResult(data.label);
+      setLogs((prev) => [...prev, { text: inputText, label: data.label }]);
+    } catch {
+      setResult("Error: Failed to classify message.");
+    } finally {
+      setLoading(false);
     }
+  };
 
-    function openProfile(name, index) {
-      currentUser = name;
-      currentUserIndex = index;
-      const profilePanel = document.getElementById('profilePanel');
-      profilePanel.style.display = 'flex';
-      document.getElementById('profileName').textContent = name;
-      document.getElementById('profileAvatar').src = userAvatars[name];
-      document.getElementById('bioText').textContent = document.getElementById(`user${index}Bio`).textContent;
-      document.getElementById('profileStatus').textContent = document.getElementById(`user${index}Status`).textContent;
-      document.getElementById('menu').style.display = 'none';
-      document.getElementById('reportForm').style.display = 'none';
-      document.getElementById('reportConfirmation').style.display = 'none';
-      const messages = document.getElementById('messages');
-      messages.innerHTML = ''; // Clear previous chat
-      const initialMessage = document.createElement('div');
-      initialMessage.className = 'message other';
-      initialMessage.innerHTML = `<div class="from">${name}</div><div class="text">Hello, click my profile.</div><div class="ticks">✔✔</div>`;
-      messages.appendChild(initialMessage);
-      messages.scrollTop = messages.scrollHeight;
-    }
+  useEffect(() => {
+    fetch("/api/logs")
+      .then((res) => res.json())
+      .then((data) => setLogs(data));
+  }, []);
 
-    function closeProfile() {
-      document.getElementById('profilePanel').style.display = 'none';
-    }
+  const chartData = Object.entries(
+    logs.reduce((acc, { label }) => {
+      acc[label] = (acc[label] || 0) + 1;
+      return acc;
+    }, {})
+  ).map(([label, count]) => ({ label, count }));
 
-    function toggleMenu() {
-      const menu = document.getElementById('menu');
-      menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
-    }
+  return (
+    <main style={{ maxWidth: 600, margin: "auto", padding: 20 }}>
+      <h1>Telegram Report AI</h1>
+      <textarea
+        rows={5}
+        style={{ width: "100%", padding: 10 }}
+        placeholder="Paste Telegram message here..."
+        value={inputText}
+        onChange={(e) => setInputText(e.target.value)}
+      />
+      <button
+        onClick={classifyMessage}
+        disabled={loading}
+        style={{ marginTop: 10, padding: "10px 20px" }}
+      >
+        {loading ? "Analyzing..." : "Classify Message"}
+      </button>
+      {result && <h3>Result: {result}</h3>}
 
-    function selectReport(type) {
-      document.getElementById('reportForm').style.display = 'block';
-      document.getElementById('menu').style.display = 'none';
-      const radios = document.getElementsByName('reportType');
-      for (let radio of radios) {
-        if (radio.value === type) {
-          radio.checked = true;
-        }
-      }
-    }
+      <h2>Logs</h2>
+      <ul>
+        {logs.map((log, i) => (
+          <li key={i}>
+            <b>{log.label}:</b> {log.text}
+          </li>
+        ))}
+      </ul>
 
-    function sendReport() {
-      const radios = document.getElementsByName('reportType');
-      let selected = false;
-      for (let radio of radios) {
-        if (radio.checked) {
-          selected = true;
-          break;
-        }
-      }
-      if (!selected) {
-        alert('Please select a report type.');
-        return;
-      }
-      reportCounts[currentUser] = (reportCounts[currentUser] || 0) + 1;
-      if (reportCounts[currentUser] >= 3) {
-        document.getElementById(`user${currentUserIndex}Name`).innerHTML = `${currentUser}<span class="spam-tag">SPAM</span>`;
-        const warning = 'Warning: This user has been reported by users for excessive harassment. Please be cautious.';
-        document.getElementById(`user${currentUserIndex}Bio`).textContent = warning;
-        document.getElementById('bioText').textContent = warning;
-      }
-      document.getElementById('reportForm').style.display = 'none';
-      document.getElementById('reportConfirmation').style.display = 'block';
-    }
-
-    function sendMessage() {
-      const input = document.querySelector('.input-box input');
-      const text = input.value.trim();
-      if (text) {
-        const messages = document.getElementById('messages');
-        const newMessage = document.createElement('div');
-        newMessage.className = 'message mine';
-        newMessage.innerHTML = `<div class="from">You</div><div class="text">${text}</div><div class="ticks">✔✔</div>`;
-        messages.appendChild(newMessage);
-        input.value = '';
-        messages.scrollTop = messages.scrollHeight;
-      }
-    }
-
-    function sendUserMessage() {
-      const messages = document.getElementById('messages');
-      const randomIndex = Math.floor(Math.random() * userMessages[currentUser].length);
-      const userText = userMessages[currentUser][randomIndex];
-      const newMessage = document.createElement('div');
-      newMessage.className = 'message other';
-      newMessage.innerHTML = `<div class="from">${currentUser}</div><div class="text">${userText}</div><div class="ticks">✔✔</div>`;
-      messages.appendChild(newMessage);
-      messages.scrollTop = messages.scrollHeight;
-    }
-  </script>
-</body>
-</html>
+      <h2>Chart</h2>
+      <LineChart width={500} height={300} data={chartData}>
+        <XAxis dataKey="label" />
+        <YAxis />
+        <Tooltip />
+        <CartesianGrid stroke="#ccc" />
+        <Line type="monotone" dataKey="count" stroke="#8884d8" />
+      </LineChart>
+    </main>
+  );
+}
